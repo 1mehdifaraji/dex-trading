@@ -1,4 +1,9 @@
-import { getTokenDescription, searchToken } from "@/services/http/token.http";
+import {
+  getToken,
+  getTokenDescription,
+  getTradingList,
+  searchToken,
+} from "@/services/http/token.http";
 import { Metadata } from "next";
 import TokenPage from "@/components/features/token/TokenPage";
 import { formatNumberToSubscript } from "@/utils/PriceFormatter";
@@ -12,6 +17,10 @@ import {
 import HowToUse from "@/components/features/followed-wallets/HowToUse";
 import { TOKEN_PAGE_PARAMS } from "@/utils/pageParams";
 import { minifyContract } from "@/utils/truncate";
+import { merge } from "@/utils/merger";
+import { IToken } from "@/types/token.type";
+import { getImages, getLogo } from "@/services/http/image.http";
+import { ChainSelect } from "@/components/features/token/ChainSelect";
 
 interface Props {
   params: IParam;
@@ -176,36 +185,76 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 }
 
-export default async function Token({ params }: Props) {
-  const searchedToken = await searchToken({
-    params: {
-      currencyAddress: params.params[1],
-    },
-  });
+export const revalidate = 120;
 
-  const tokenDescription = await getTokenDescription(params.params[1]);
+const Token = async ({ params }: Props) => {
+  const tokenAddress = params.params[TOKEN_PAGE_PARAMS.CONTRACT_ADDRESS];
+  const network = params.params[TOKEN_PAGE_PARAMS.NETWORK];
+
+  const [searchedToken, tokenDescription, tokenData, alternateLogo, images] =
+    await Promise.all([
+      searchToken({ params: { currencyAddress: params.params[1] } }),
+      getTokenDescription(params.params[1]).catch(() => null),
+      getToken(tokenAddress, { params: { network } }),
+      getLogo(tokenAddress, network).catch(() => null),
+      getImages(),
+    ]);
+
+  // const searchedToken = await searchToken({
+  //   params: {
+  //     currencyAddress: params.params[1],
+  //   },
+  // });
+
+  // let tokenDescription;
+  // try {
+  //   await getTokenDescription(params.params[1]);
+  // } catch (e) {
+  //   console.log(e);
+  // }
+
+  // const tokenData = await getToken(tokenAddress, { params: { network } });
+  const token = merge(searchedToken, tokenData) as IToken;
+
+  // let alternateLogo;
+  // try {
+  //   await getLogo(tokenAddress, network);
+  // } catch (e) {
+  //   console.log(e);
+  // }
+
+  // 500
+  // const tradeReport = await getTradingList({
+  //   params: { network, address: tokenAddress },
+  // });
+
+  // const images = await getImages();
 
   return (
     <div>
       <Breadcrumb className="mt-12 mb-4">
         <BreadcrumbList>
           <BreadcrumbLink href="/">Home</BreadcrumbLink>
-          <BreadcrumbLink
-            href={`/tokens/${params.params[TOKEN_PAGE_PARAMS.NETWORK]}/${
-              params.params[TOKEN_PAGE_PARAMS.CONTRACT_ADDRESS]
-            }`}
-          >
-            {minifyContract(params.params[TOKEN_PAGE_PARAMS.CONTRACT_ADDRESS])}
+          <BreadcrumbLink href={`/tokens/${network}/${tokenAddress}`}>
+            {minifyContract(tokenAddress)}
           </BreadcrumbLink>
         </BreadcrumbList>
       </Breadcrumb>
       <h1 className="text-lg md:text-xl">
         ${searchedToken.data?.[0].attributes?.name?.split("/")[0].toUpperCase()}{" "}
-        DEX – Live {params.params[TOKEN_PAGE_PARAMS.NETWORK].toUpperCase()}{" "}
-        Market Data
+        DEX – Live {network.toUpperCase()} Market Data
       </h1>
-      <TokenPage params={params} token={searchedToken} />
-
+      <ChainSelect network={network} params={params.params} />
+      <TokenPage
+        images={images}
+        params={params}
+        token={searchedToken}
+        tokenDetail={token}
+        tokenAddress={tokenAddress}
+        network={network}
+        // tradeReport={tradeReport}
+        alternateLogo={alternateLogo}
+      />
       {tokenDescription &&
         tokenDescription.data &&
         tokenDescription.data.data && (
@@ -225,4 +274,6 @@ export default async function Token({ params }: Props) {
       <HowToUse />
     </div>
   );
-}
+};
+
+export default Token;

@@ -28,27 +28,27 @@ export default function TradeReport({
   tokenAddress,
   network,
   tokenName,
-  tokenAddress2,
+  tradeReport,
 }: Props) {
   const router = useRouter();
   const { availableChains } = useNetworkSelector();
-  const {
-    isLoading,
-    error,
-    data: tradeReport,
-  } = useQuery<ITradingListResponse>({
-    queryKey: ["TradeReport"],
-    queryFn: () =>
-      getTradingList({ params: { network, address: tokenAddress } }),
-  });
+  // const {
+  //   isLoading,
+  //   error,
+  //   data: tradeReport,
+  // } = useQuery<ITradingListResponse>({
+  //   queryKey: ["TradeReport"],
+  //   queryFn: () =>
+  //     getTradingList({ params: { network, address: tokenAddress } }),
+  // });
 
-  if (isLoading)
-    return (
-      <div className="flex flex-col items-center gap-3 mt-3">
-        <Skeleton className="h-4 w-[250px]" />
-        <Skeleton className="h-4 w-[200px]" />
-      </div>
-    );
+  // if (isLoading)
+  //   return (
+  //     <div className="flex flex-col items-center gap-3 mt-3">
+  //       <Skeleton className="h-4 w-[250px]" />
+  //       <Skeleton className="h-4 w-[200px]" />
+  //     </div>
+  //   );
 
   const data = tradeReport ? tradeReport.data : [];
 

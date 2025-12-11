@@ -1,4 +1,3 @@
-import { getTopNFTs } from "@/services/http/nft.http";
 import { Metadata } from "next";
 import Head from "next/head";
 
@@ -49,51 +48,46 @@ export const metadata: Metadata = {
   ],
   icons: {
     icon: `${process.env.NEXT_PUBLIC_BASE_URL_SEVEN}/favicon.ico`,
-    apple: `${process.env.NEXT_PUBLIC_BASE_URL_SEVEN}/icon/apple-touch-icon.png`
+    apple: `${process.env.NEXT_PUBLIC_BASE_URL_SEVEN}/icon/apple-touch-icon.png`,
   },
 };
 
-export default async function Home() {
-  try {
-    const nfts = await getTopNFTs();
-
-    return (
-      <div className="w-full">
-        <Head>
-          <meta
-            name="ahrefs-site-verification"
-            content="e0126c4c482c36a1009f59bdf25461160da3e532ae99fd5c060b217818d6f886"
-          />
-          <link
-            rel="apple-touch-icon"
-            sizes="180x180"
-            href="/icon/apple-touch-icon.png"
-          />
-          <link
-            rel="icon"
-            type="image/png"
-            sizes="32x32"
-            href="/icon/favicon-32x32.png"
-          />
-          <link
-            rel="icon"
-            type="image/png"
-            sizes="16x16"
-            href="/icon/favicon-16x16.png"
-          />
-          <link rel="manifest" href="/icon/site.webmanifest" />
-          <script id="clarity-script" type="text/javascript">
-            {`(function(c,l,a,r,i,t,y){
+const Home = () => {
+  return (
+    <div className="w-full">
+      <Head>
+        <meta
+          name="ahrefs-site-verification"
+          content="e0126c4c482c36a1009f59bdf25461160da3e532ae99fd5c060b217818d6f886"
+        />
+        <link
+          rel="apple-touch-icon"
+          sizes="180x180"
+          href="/icon/apple-touch-icon.png"
+        />
+        <link
+          rel="icon"
+          type="image/png"
+          sizes="32x32"
+          href="/icon/favicon-32x32.png"
+        />
+        <link
+          rel="icon"
+          type="image/png"
+          sizes="16x16"
+          href="/icon/favicon-16x16.png"
+        />
+        <link rel="manifest" href="/icon/site.webmanifest" />
+        <script id="clarity-script" type="text/javascript">
+          {`(function(c,l,a,r,i,t,y){
         c[a]=c[a]function(){(c[a].q=c[a].q[]).push(arguments)};
         t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
         y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
     })(window, document, "clarity", "script", "mik57uafy0");`}
-          </script>
-        </Head>
-        
-      </div>
-    );
-  } catch (error) {
-    return <div>Failed to load data, please try again.</div>;
-  }
-}
+        </script>
+      </Head>
+    </div>
+  );
+};
+
+export default Home;

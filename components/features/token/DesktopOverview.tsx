@@ -1,10 +1,11 @@
+"use client";
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { minifyContract, minifyTokenName } from "@/utils/truncate";
 import React, { useEffect, useState } from "react";
 import SocialMedia from "./social-media";
 import ShareToken from "@/components/ui/share-screenshot/ShareToken";
 import { KeyValue } from "@/components/ui/key-value";
-import { RiLoader5Line } from "react-icons/ri";
 import { formatCash } from "@/utils/numbers";
 import { HolderInterest } from "./token-overview";
 import SwapDrawer from "./SwapDrawer";
@@ -24,8 +25,6 @@ function DesktopOverview({
 }: {
   tokenOverview: TokenOverview & {
     tokenAddress: string;
-    tokenLoading: boolean;
-    tokenError: Error | null;
   };
 }) {
   const { watchlist, addToWatchlist, removeFromWatchlist } =
@@ -70,18 +69,12 @@ function DesktopOverview({
         <div className="left flex flex-col gap-5">
           <div className="top flex flex-row items-center md:items-center justify-start gap-5">
             <Avatar className="w-10 h-10 rounded-full md:h-10 md:w-10">
-              {tokenOverview.logoLoading ? (
-                <AvatarFallback>Loading...</AvatarFallback>
-              ) : tokenOverview.logoError ? (
-                <AvatarFallback>Error</AvatarFallback>
-              ) : (
-                <AvatarImage
-                  src={
-                    tokenOverview.logo ?? tokenOverview.alternateLogo?.imageUrl
-                  }
-                  alt={tokenOverview.altText}
-                />
-              )}
+              <AvatarImage
+                src={
+                  tokenOverview.logo ?? tokenOverview.alternateLogo?.imageUrl
+                }
+                alt={tokenOverview.altText}
+              />
               <AvatarFallback>
                 {tokenOverview.token?.data?.[0]?.attributes?.name?.charAt(0) ||
                   "N/A"}
@@ -165,17 +158,9 @@ function DesktopOverview({
                   />
                 )}
             </div>
-            {tokenOverview.tokenLoading ? (
-              <div className="w-5 h-5">
-                <RiLoader5Line className="animate-spin text-4xl" />
-              </div>
-            ) : tokenOverview.tokenError ? (
-              <div>Error fetching data</div>
-            ) : (
-              <div className="flex lg:flex-row flex-col gap-2">
-                <TokenBuySellTaxes token={tokenOverview.token} />
-              </div>
-            )}
+            <div className="flex lg:flex-row flex-col gap-2">
+              <TokenBuySellTaxes token={tokenOverview.token} />
+            </div>
           </div>
           <div className="right flex sm:flex-row sm:items-center items-start flex-col gap-2 lg:gap-6 !text-xs ">
             {tokenOverview.token.data != undefined &&

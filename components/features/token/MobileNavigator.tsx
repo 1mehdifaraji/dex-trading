@@ -31,21 +31,13 @@ interface Props {
 }
 
 function MobileNavigator({
-  token: tokenDataFromServer,
+  token,
   tokenAddress,
   network,
+  tradeReport,
+  alternateLogo,
+  logo,
 }: Props) {
-  const {
-    data: tokenData,
-    isLoading: tokenLoading,
-    error: tokenError,
-  } = useQuery({
-    queryKey: ["token", tokenAddress, network],
-    queryFn: () => getToken(tokenAddress, { params: { network } }),
-    enabled: !!tokenAddress && !!network,
-  });
-  const token = merge(tokenDataFromServer, tokenData) as IToken;
-
   const CustomizedTabTrigger = ({
     value,
     children,
@@ -92,16 +84,14 @@ function MobileNavigator({
           <ScoringSvg />
           <span className="ml-1">Scoring</span>
         </CustomizedTabTrigger>
-        {/* <TabsTrigger  value="scoring">
-          <FaRankingStar />
-          <span className="ml-1">Scoring</span>
-        </TabsTrigger> */}
       </TabsList>
       <TabsContent value="overview" className="mt-5 !-px-0 ">
         <TokenOverview
           token={token}
           tokenAddress={tokenAddress}
           network={network}
+          alternateLogo={alternateLogo}
+          logo={logo}
         />
       </TabsContent>
       <TabsContent value="chart" className="mt-5">
@@ -109,6 +99,8 @@ function MobileNavigator({
           token={token}
           tokenAddress={tokenAddress}
           network={network}
+          // tradeReport={tradeReport}
+          alternateLogo={alternateLogo}
         />
       </TabsContent>
       <TabsContent value="markets" className="mt-5">
@@ -119,15 +111,7 @@ function MobileNavigator({
         <TokenSecurityOldShit token={token} tokenAddress={tokenAddress} />
       </TabsContent>
       <TabsContent value="holders" className="mt-5">
-        <RenderConditionalComponent
-          value={true}
-          options={{
-            trueValueComponent: (
-              <TokenHolders token={token} tokenAddress={tokenAddress} />
-            ),
-            // falseValueComponent: <Paywall />,
-          }}
-        />
+        <TokenHolders token={token} tokenAddress={tokenAddress} />
       </TabsContent>
     </Tabs>
   );

@@ -1,11 +1,8 @@
-"use client";
-
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { TokenOverview } from "@/types/token.type";
 import PriceFormatter from "@/utils/PriceFormatter";
 import { minifyTokenName } from "@/utils/truncate";
 import React, { memo } from "react";
-import { RiLoader5Line } from "react-icons/ri";
 
 function TokenActiveHeaderContent({
   tokenOverview,
@@ -16,18 +13,10 @@ function TokenActiveHeaderContent({
     <div className="left flex items-start justify-start gap-4">
       <div className="top flex flex-row  items-center justify-start gap-4">
         <Avatar className="h-10 w-10">
-          {tokenOverview.logoLoading ? (
-            <AvatarFallback>
-              <RiLoader5Line className="animate-spin text-4xl" />
-            </AvatarFallback>
-          ) : tokenOverview.logoError ? (
-            <AvatarFallback>Error</AvatarFallback>
-          ) : (
-            <AvatarImage
-              src={tokenOverview.logo ?? tokenOverview.alternateLogo?.imageUrl}
-              alt={tokenOverview.altText}
-            />
-          )}
+          <AvatarImage
+            src={tokenOverview.logo ?? tokenOverview.alternateLogo?.imageUrl}
+            alt={tokenOverview.altText}
+          />
           <AvatarFallback>
             {tokenOverview.token?.data?.[0]?.attributes?.name?.charAt(0) ||
               "N/A"}

@@ -1,26 +1,19 @@
-"use client";
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { IToken } from "@/types/token.type";
 import dayjs from "dayjs";
 import { KeyValue } from "@/components/ui/key-value";
-import { useLoadingStore, useWatchlistStore } from "@/store";
-import { useQuery } from "@tanstack/react-query";
-import { getLogo } from "@/services/http/image.http";
-import { getToken, searchToken } from "@/services/http/token.http";
-import { merge } from "@/utils/merger";
+
 import { FiAlertTriangle } from "react-icons/fi";
 import { IoMdArrowDropdown, IoMdArrowDropup } from "react-icons/io";
 import TokenActiveHeaderContent from "./TokenActiveHeaderContent";
 import DesktopOverview from "./DesktopOverview";
 import MobileTokenOverview from "./MobileTokenOverview";
-import { Skeleton } from "@/components/ui/skeleton";
 import dynamic from "next/dynamic";
 
 const ActiveHeader = dynamic(() => import("../header/active-header"), {
   ssr: false,
 });
-
 
 interface Props {
   tokenAddress: string;
@@ -29,41 +22,11 @@ interface Props {
 }
 
 export default function TokenOverview({
-  token: tokenDataFromServer,
+  token,
   tokenAddress,
-  network,
+  logo,
+  alternateLogo,
 }: Props) {
-  const { data: alternateLogo } = useQuery({
-    queryKey: ["logo", tokenAddress, network],
-    queryFn: () => getLogo(tokenAddress, network),
-    enabled: !!tokenAddress && !!network,
-  });
-  const {
-    data: logo,
-    isLoading: logoLoading,
-    error: logoError,
-  } = useQuery({
-    queryKey: ["logo url", tokenAddress, network],
-    queryFn: () => searchToken({ params: { currencyAddress: tokenAddress } }),
-    select: (data) => data.data?.[0]?.imageUrl2,
-  });
-  //get token
-  const {
-    data: tokenData,
-    isLoading: tokenLoading,
-    error: tokenError,
-  } = useQuery({
-    queryKey: ["token", tokenAddress, network],
-    queryFn: () => getToken(tokenAddress, { params: { network } }),
-    enabled: !!tokenAddress && !!network,
-  });
-  const token = merge(tokenDataFromServer, tokenData) as IToken;
-
-  const { watchlist, addToWatchlist, removeFromWatchlist } =
-    useWatchlistStore();
-  const [isInWatchlist, setIsInWatchlist] = useState(false);
-  const setLoading = useLoadingStore((state) => state.setLoading);
-
   // Extract token attributes
   const tokenName = token?.data?.[0]?.attributes?.name || "Unknown Token";
 
@@ -100,14 +63,6 @@ export default function TokenOverview({
   // Build the alt text as a natural sentence
   const altText = `${tokenName} is now live, trading at a price of $${price} with liquidity of $${liquidity}. Launched on ${createdAt}, it has seen a 24-hour change of ${priceChange}. Operating on the ${bnetwork} network with base token address ${baseTokenAddress} and listed on ${listedExchange}, this token offers live chart tracking, real-time predictions, and secure trading on our DEX.`;
 
-  useEffect(() => {
-    setLoading(false);
-  }, [setLoading]);
-
-  if (tokenLoading) {
-    return <Skeleton className="h-[234px] w-full"></Skeleton>;
-  }
-
   return (
     <div
       id="token-capture"
@@ -130,8 +85,6 @@ export default function TokenOverview({
               token,
               altText,
               logo,
-              logoError,
-              logoLoading,
               alternateLogo,
             }}
           />
@@ -144,12 +97,8 @@ export default function TokenOverview({
               token,
               altText,
               logo,
-              logoError,
-              logoLoading,
               alternateLogo,
               tokenAddress,
-              tokenError,
-              tokenLoading,
             }}
           />
           <MobileTokenOverview
@@ -157,12 +106,8 @@ export default function TokenOverview({
               token,
               altText,
               logo,
-              logoError,
-              logoLoading,
               alternateLogo,
               tokenAddress,
-              tokenError,
-              tokenLoading,
             }}
           />
         </CardContent>
@@ -195,8 +140,8 @@ export function PriceChange({ token }: { token: IToken }) {
   );
 }
 
-export function HolderInterest({ token }: { token: IToken }) {
-  return token?.BalancesData?.numberOfAddresses != undefined ? (
+export const HolderInterest = ({ token }: { token: IToken }) =>
+  token?.BalancesData?.numberOfAddresses != undefined ? (
     <KeyValue
       title="Holder interest"
       value={token?.BalancesData?.numberOfAddresses}
@@ -205,4 +150,3 @@ export function HolderInterest({ token }: { token: IToken }) {
   ) : (
     <KeyValue title="Holder interest" value={0} variant={"bad"} />
   );
-}
