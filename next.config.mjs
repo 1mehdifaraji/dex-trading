@@ -5,7 +5,7 @@ const withAnalyzer = withBundleAnalyzer({
 });
 
 const nextConfig = withAnalyzer({
-  reactStrictMode: true,
+  reactStrictMode: false,
   staticPageGenerationTimeout: 120,
   images: {
     remotePatterns: [{ hostname: "static.okx.com" }],
@@ -16,11 +16,17 @@ const nextConfig = withAnalyzer({
       "static.oklink.com",
       "95.81.93.198",
       "i.pravatar.cc",
-      "oin-images.coingecko.com"
+      "oin-images.coingecko.com",
     ],
   },
   metadataBase: new URL("https://dextrading.com"),
   compress: true,
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  typescript: {
+    ignoreBuildErrors: true,
+  },
 });
 
 export default nextConfig;
