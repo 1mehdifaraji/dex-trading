@@ -1,7 +1,8 @@
+"use client";
+
 import React from "react";
 import dynamic from "next/dynamic";
 import { useTheme } from "next-themes";
-
 
 const AdvancedRealTimeChart = dynamic(
   () =>
@@ -10,16 +11,19 @@ const AdvancedRealTimeChart = dynamic(
     ssr: false,
   }
 );
-export default function Tradingview({ symbol }: { symbol: string }) {
+
+const Tradingview = ({ symbol }: { symbol: string }) => {
   const { theme } = useTheme();
 
   return (
     <div className="w-full h-[600px]">
       <AdvancedRealTimeChart
-        theme={theme === 'light' ? 'light' : 'dark'}
+        theme={theme === "light" ? "light" : "dark"}
         autosize
         symbol={symbol}
-      ></AdvancedRealTimeChart>
+      />
     </div>
   );
-}
+};
+
+export default Tradingview;

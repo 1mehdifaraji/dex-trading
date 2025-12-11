@@ -20,6 +20,7 @@ export const getLogo = (
     `${process.env.NEXT_PUBLIC_BASE_URL_TWO}/${tokenAddress}/logo/${network}`,
     options
   );
+
 export const snapshotImage = (token: string, image: any): Promise<ImageType> =>
   axios.post(`${process.env.NEXT_PUBLIC_BASE_URL_TWO}/snapshot`, image, {
     headers: {

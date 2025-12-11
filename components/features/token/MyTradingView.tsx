@@ -8,6 +8,7 @@ import {
 } from "@/public/static/charting_library";
 import { IOhlcvData } from "@/types/datafeed.type";
 import { usePathname } from "next/navigation";
+import { priceFormatterFactory } from "@/lib/utils";
 
 interface Props {
   chartOptions: Partial<ChartingLibraryWidgetOptions>;
@@ -188,6 +189,9 @@ const MyTradingView = ({
       container: chartContainerRef.current,
       library_path: chartOptions.library_path,
       locale: "en",
+      custom_formatters: {
+        priceFormatterFactory,
+      },
       debug: true,
       disabled_features: ["use_localstorage_for_settings"],
       enabled_features: ["study_templates"],
