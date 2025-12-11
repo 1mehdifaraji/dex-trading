@@ -1,19 +1,19 @@
-"use client"
+"use client";
 
 import useHeaderStore from "@/store/ActiveHeader";
 import { useCallback, useEffect } from "react";
 
-export default function ActiveHeader({ scrollLimit = 200, content }: any) {
+const ActiveHeader = ({ scrollLimit = 200, content }: any) => {
   const setIsActive = useHeaderStore((state) => state.setIsActive);
 
-  const deactiveHandler = useCallback(() => {
-    setIsActive({ isActive: false, content: <></> });
-  }, [setIsActive]);
+  const deactiveHandler = useCallback(
+    () => setIsActive({ isActive: false, content: <></> }),
+    [setIsActive]
+  );
 
   const scrollHandler = useCallback(() => {
-    if (window.scrollY >= scrollLimit) {
-      setIsActive({ isActive: true, content });
-    } else {
+    if (window.scrollY >= scrollLimit) setIsActive({ isActive: true, content });
+    else {
       deactiveHandler();
     }
   }, [content, scrollLimit, deactiveHandler, setIsActive]);
@@ -28,5 +28,7 @@ export default function ActiveHeader({ scrollLimit = 200, content }: any) {
     };
   }, [scrollLimit, deactiveHandler, scrollHandler]);
 
-  return <></>;
-}
+  return null;
+};
+
+export default ActiveHeader;

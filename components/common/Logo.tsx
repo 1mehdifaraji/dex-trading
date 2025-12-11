@@ -1,4 +1,5 @@
 "use client";
+
 import React from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
@@ -6,7 +7,7 @@ import { Fira_Code } from "next/font/google";
 
 const firaCode = Fira_Code({ subsets: ["latin"] });
 
-export default function Logo({withName = true}: {withName?: boolean}) {
+export default function Logo({ withName = true }: { withName?: boolean }) {
   return (
     <motion.div
       whileHover={{}}
@@ -23,11 +24,13 @@ export default function Logo({withName = true}: {withName?: boolean}) {
           objectFit="contain"
         />
       </div>
-      {withName && <span
-        className={`hidden md:block text-accent-foreground text-lg font-semibold md:text-lg lg:text-xl ${firaCode.className}`}
-      >
-        DexTrading
-      </span>}
+      {withName && (
+        <span
+          className={`hidden md:block text-accent-foreground text-lg font-semibold md:text-lg lg:text-xl ${firaCode.className}`}
+        >
+          DexTrading
+        </span>
+      )}
     </motion.div>
   );
 }
