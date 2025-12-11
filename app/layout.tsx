@@ -1,27 +1,17 @@
-import "normalize.css/normalize.css";
 import { Inter } from "next/font/google";
-import "./globals.scss";
 import Providers from "@/providers";
 import { cn } from "@/lib/utils";
 import { Footer } from "@/components/layout/Footer";
 import Script from "next/script";
 import TabLimit from "@/components/layout/TabLimit";
 import { Metadata } from "next";
-import dynamic from "next/dynamic";
-import Clarity from '@microsoft/clarity';
+import Clarity from "@microsoft/clarity";
 
+import Header from "@/components/layout/Header";
+import { ToastContainer } from "react-toastify";
 
-
-const ToastContainer = dynamic(
-  () => import("react-toastify").then((mod) => mod.ToastContainer),
-  {
-    ssr: false,
-  }
-);
-
-const Header = dynamic(() => import("@/components/layout/Header"), {
-  ssr: false,
-});
+import "normalize.css/normalize.css";
+import "./globals.scss";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -69,8 +59,7 @@ export default function RootLayout({
                     {children}
                   </div>
                 }
-              ></TabLimit>
-
+              />
               <Footer />
             </main>
           </div>
